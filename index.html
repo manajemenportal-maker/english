@@ -131,7 +131,7 @@
         <div class="field"><label>Gaya koreksi</label><select id="correctionMode"><option value="gentle">Halus</option><option value="normal" selected>Normal</option><option value="strict">Ketat</option></select></div>
       </div>
       <div class="row2">
-        <div class="field"><label>Kecepatan suara</label><select id="voiceRate"><option value="0.85">Pelan</option><option value="0.95" selected>Normal</option><option value="1.05">Cepat</option></select></div>
+        <div class="field"><label>Kecepatan suara</label><select id="voiceRate"><option value="0.75">Sangat Pelan</option><option value="0.85">Pelan</option><option value="0.95" selected>Normal</option><option value="1.05">Cepat</option><option value="1.15">Sangat Cepat</option></select></div>
         <div class="field"><label>Mode</label><select id="sessionMode"><option value="conversation" selected>Conversation</option><option value="interview">Interview</option><option value="presentation">Presentation</option><option value="sales">Sales Pitch</option></select></div>
       </div>
       <div class="field"><label>Target latihan</label><textarea id="goalInput" placeholder="Contoh: mau lancar menjawab saat interview, presentasi produk, atau ngobrol santai."></textarea></div>
@@ -422,6 +422,7 @@ let currentTopic = topics[0];
 let currentPersonaKey = 'businessman';
 let currentPersona = personas[currentPersonaKey];
 let turnCount = 0, lastRemoteText = '', inCall = false, listening = false, recognition = null, cameraStream = null;
+let savedVoiceRate = localStorage.getItem('english-ai-live-voice-rate') || '0.95';
 let conversation = []; let logData = []; let askedQuestionIndex = {}; let lastQuestion = '';
 
 
@@ -442,6 +443,8 @@ document.addEventListener('keydown', e=>{
 });
 
 function init(){
+  const vr = document.getElementById('voiceRate');
+  if(vr){ vr.value = savedVoiceRate; }
   populateTopics(); populatePersonas(); renderTopicGrid(); setupRecognition(); updatePersona(); updateBars(0,0,0); loadState();
   document.getElementById('modeStatus').textContent = 'Mode: Smart Offline AI';
 }
@@ -817,7 +820,16 @@ function renderCoach(a){
 }
 
 function addTranscript(type, text){ const box=document.getElementById('transcriptBox'); const item=document.createElement('div'); item.className='msg '+type; item.innerHTML=`<span class="who">${type==='user'?'You':currentPersona.name}</span>${escapeHtml(text).replace(/\n/g,'<br>')}`; box.appendChild(item); box.scrollTop=box.scrollHeight; if(type==='bot') lastRemoteText=text; }
-function speakRemote(text){ lastRemoteText=text; const frame=document.getElementById('remoteFrame'); frame.classList.add('speaking'); if('speechSynthesis' in window){ window.speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='en-US'; u.rate=parseFloat(document.getElementById('voiceRate').value || '0.95'); const voices=window.speechSynthesis.getVoices(); const wanted=voices.find(v=>/en-US|en_US/i.test(v.lang)) || voices.find(v=>/^en/i.test(v.lang)); if(wanted) u.voice=wanted; u.onend=()=>frame.classList.remove('speaking'); window.speechSynthesis.speak(u); } else { setTimeout(()=>frame.classList.remove('speaking'), 1800); } }
+
+function getVoiceRate(){
+  const el = document.getElementById('voiceRate');
+  const val = el ? el.value : savedVoiceRate;
+  savedVoiceRate = val || savedVoiceRate || '0.95';
+  localStorage.setItem('english-ai-live-voice-rate', savedVoiceRate);
+  return parseFloat(savedVoiceRate);
+}
+
+function speakRemote(text){ lastRemoteText=text; const frame=document.getElementById('remoteFrame'); frame.classList.add('speaking'); if('speechSynthesis' in window){ window.speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='en-US'; u.rate=getVoiceRate(); const voices=window.speechSynthesis.getVoices(); const wanted=voices.find(v=>/en-US|en_US/i.test(v.lang)) || voices.find(v=>/^en/i.test(v.lang)); if(wanted) u.voice=wanted; u.onend=()=>frame.classList.remove('speaking'); window.speechSynthesis.speak(u); } else { setTimeout(()=>frame.classList.remove('speaking'), 1800); } }
 function speakLastRemote(){ if(lastRemoteText) speakRemote(lastRemoteText); }
 function clearInput(){ document.getElementById('userInput').value=''; }
 function insertTemplate(t){ const ta=document.getElementById('userInput'); ta.value=t; ta.focus(); }
@@ -834,12 +846,20 @@ function insertSample(){
 
 function saveLog(user, analysis, reply){ logData.push({time:new Date().toLocaleString(), topic:currentTopic.name, persona:currentPersona.name, user, corrected:analysis.corrected, natural:analysis.natural, reply, grammar:analysis.grammar, vocab:analysis.vocab, confidence:analysis.confidence}); localStorage.setItem('english-ai-live-log', JSON.stringify(logData)); }
 function downloadLog(){ const data = logData.length?logData:JSON.parse(localStorage.getItem('english-ai-live-log')||'[]'); const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='english-ai-live-log.json'; a.click(); }
-function saveState(){ const state={topic:currentTopic.id, persona:currentPersonaKey, level:document.getElementById('levelSelect').value, correctionMode:document.getElementById('correctionMode').value, voiceRate:document.getElementById('voiceRate').value, sessionMode:document.getElementById('sessionMode').value, goalInput:document.getElementById('goalInput').value}; localStorage.setItem('english-ai-live-state', JSON.stringify(state)); }
-function loadState(){ const raw=localStorage.getItem('english-ai-live-state'); if(!raw) return; try{ const s=JSON.parse(raw); if(s.topic){ currentTopic=topics.find(t=>t.id===s.topic)||topics[0]; document.getElementById('topicSelect').value=currentTopic.id; } if(s.persona&&personas[s.persona]){ currentPersonaKey=s.persona; document.getElementById('personaSelect').value=s.persona; } if(s.level) document.getElementById('levelSelect').value=s.level; if(s.correctionMode) document.getElementById('correctionMode').value=s.correctionMode; if(s.voiceRate) document.getElementById('voiceRate').value=s.voiceRate; if(s.sessionMode) document.getElementById('sessionMode').value=s.sessionMode; if(s.goalInput) document.getElementById('goalInput').value=s.goalInput; updatePersona(); renderTopicGrid(); }catch(e){} }
+function saveState(){ const state={topic:currentTopic.id, persona:currentPersonaKey, level:document.getElementById('levelSelect').value, correctionMode:document.getElementById('correctionMode').value, voiceRate:String(getVoiceRate()), sessionMode:document.getElementById('sessionMode').value, goalInput:document.getElementById('goalInput').value}; localStorage.setItem('english-ai-live-state', JSON.stringify(state)); }
+function loadState(){ const raw=localStorage.getItem('english-ai-live-state'); if(!raw) return; try{ const s=JSON.parse(raw); if(s.topic){ currentTopic=topics.find(t=>t.id===s.topic)||topics[0]; document.getElementById('topicSelect').value=currentTopic.id; } if(s.persona&&personas[s.persona]){ currentPersonaKey=s.persona; document.getElementById('personaSelect').value=s.persona; } if(s.level) document.getElementById('levelSelect').value=s.level; if(s.correctionMode) document.getElementById('correctionMode').value=s.correctionMode; if(s.voiceRate){ savedVoiceRate=s.voiceRate; document.getElementById('voiceRate').value=s.voiceRate; localStorage.setItem('english-ai-live-voice-rate', s.voiceRate); } if(s.sessionMode) document.getElementById('sessionMode').value=s.sessionMode; if(s.goalInput) document.getElementById('goalInput').value=s.goalInput; updatePersona(); renderTopicGrid(); }catch(e){} }
 function resetSession(){ inCall=false; turnCount=0; lastRemoteText=''; conversation=[]; askedQuestionIndex={}; lastQuestion=''; document.getElementById('callStatus').textContent='Status: ready'; document.getElementById('sessionInfo').textContent='Choose topic and start'; document.getElementById('turnScore').textContent='0'; updateScores(0,0,0); document.getElementById('transcriptBox').innerHTML='<div class="msg bot"><span class="who">System</span>Welcome! Pilih tema dan lawan bicara, lalu klik <b>Mulai Sesi</b>.</div>'; document.getElementById('coachOutput').innerHTML='<div class="coach-note">Di sini akan muncul koreksi grammar umum, versi kalimat yang lebih natural, dan saran perbaikan.</div>'; document.getElementById('userInput').value=''; window.speechSynthesis?.cancel(); document.getElementById('remoteFrame').classList.remove('speaking'); saveState(); }
 function escapeHtml(str){ return String(str).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
 document.getElementById('userInput').addEventListener('keydown', (e)=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendUser(); } });
-['levelSelect','correctionMode','voiceRate','sessionMode','goalInput'].forEach(id=> document.addEventListener('change', e=>{ if(e.target && e.target.id===id) saveState(); }));
+['levelSelect','correctionMode','voiceRate','sessionMode','goalInput'].forEach(id=> document.addEventListener('change', e=>{ 
+  if(e.target && e.target.id===id){
+    if(id==='voiceRate'){
+      savedVoiceRate = e.target.value;
+      localStorage.setItem('english-ai-live-voice-rate', savedVoiceRate);
+    }
+    saveState();
+  }
+}));
 document.getElementById('goalInput').addEventListener('input', saveState);
 init();
 </script>
