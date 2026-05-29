@@ -154,21 +154,186 @@ const personas = {
 };
 
 const topics = [
-  {id:'daily', name:'Daily Conversation', starter:'Hi! How was your day today?', vocab:['routine','busy','usually','relax','schedule'], follow:['What was the most important thing you did today?','What do you usually do after work?']},
-  {id:'selfintro', name:'Self Introduction', starter:'Please introduce yourself in English.', vocab:['background','experience','currently','responsible','strength'], follow:['What is your main strength?','What kind of work do you enjoy the most?']},
-  {id:'job', name:'Job Interview', starter:'Tell me about yourself and why we should hire you.', vocab:['achievement','deadline','responsibility','adaptable','strength'], follow:['What is your biggest achievement?','Why are you interested in this position?']},
-  {id:'business', name:'Business Meeting', starter:'What business or service would you like to discuss today?', vocab:['proposal','market','strategy','customer','revenue'], follow:['Who is your target customer?','What makes your business different from competitors?']},
-  {id:'sales', name:'Sales Pitch', starter:'Please pitch your product or service to me in English.', vocab:['benefit','saving','solution','guarantee','investment'], follow:['What is the main benefit for the customer?','Can you explain your price simply?']},
-  {id:'presentation', name:'Presentation', starter:'Please begin your presentation in English.', vocab:['main point','as you can see','conclusion','question','benefit'], follow:['What is your first main point?','Can you summarize your product in one sentence?']},
-  {id:'travel', name:'Travel & Hotel', starter:'Imagine you are checking in at a hotel. What would you say?', vocab:['reservation','available room','check in','facilities','luggage'], follow:['What facilities do you need?','Have you ever had a problem while traveling?']},
-  {id:'restaurant', name:'Food & Restaurant', starter:'What kind of food do you like, and why?', vocab:['menu','taste','recommendation','spicy','bill'], follow:['Can you recommend one local food?','Do you prefer spicy or sweet food?']},
-  {id:'customer', name:'Customer Service', starter:'I am an unhappy customer. How will you help me?', vocab:['apologize','issue','solution','replacement','follow up'], follow:['What solution can you offer today?','How will you prevent this problem from happening again?']},
-  {id:'technology', name:'Technology & Apps', starter:'Tell me about an app or website you want to build.', vocab:['feature','dashboard','user','database','subscription'], follow:['What is the most important feature?','How will users benefit from your app?']},
-  {id:'agriculture', name:'Agriculture & Machinery', starter:'How can agricultural machinery help farmers?', vocab:['tractor','harvester','irrigation','productivity','maintenance'], follow:['How does the machine improve productivity?','What maintenance is required?']},
-  {id:'procurement', name:'Government Procurement', starter:'Explain your company capability for a government tender.', vocab:['compliance','certificate','specification','local content','delivery'], follow:['What documents and certificates can you provide?','How do you ensure delivery and after-sales service?']},
-  {id:'investor', name:'Investor Pitch', starter:'Convince me to invest in your business.', vocab:['opportunity','risk','return','market size','scalable'], follow:['What is your revenue model?','How will investors get their return?']},
-  {id:'doctor', name:'Doctor Visit', starter:'Tell me your symptoms as if I am a doctor.', vocab:['symptoms','headache','fever','medicine','appointment'], follow:['How long have you had this symptom?','Do you have any allergies?']},
-  {id:'smalltalk', name:'Small Talk', starter:'Let’s make small talk. What do you usually talk about first?', vocab:['weather','weekend','hobby','where are you from','nice to meet you'], follow:['What do you usually do on weekends?','What topics are safe for small talk?']}
+  {id:'daily', name:'Daily Conversation', starter:'Hi! How was your day today?', vocab:['routine','busy','usually','relax','schedule'], follow:[
+    'How was your day today?',
+    'What was the most important thing you did today?',
+    'What do you usually do after work?',
+    'What time do you usually wake up?',
+    'What do you usually eat for breakfast?',
+    'What makes your day feel productive?',
+    'Do you prefer a busy day or a relaxed day? Why?',
+    'What activity helps you relax?',
+    'Can you describe your daily routine?',
+    'What is one thing you want to improve in your daily life?'
+  ]},
+  {id:'selfintro', name:'Self Introduction', starter:'Please introduce yourself in English.', vocab:['background','experience','currently','responsible','strength'], follow:[
+    'Please introduce yourself in English.',
+    'What is your name and what do you do?',
+    'Where are you from?',
+    'What is your professional background?',
+    'What are you currently working on?',
+    'What is your main strength?',
+    'What kind of work do you enjoy the most?',
+    'What experience are you proud of?',
+    'What is your goal for learning English?',
+    'How would you introduce yourself in a business meeting?'
+  ]},
+  {id:'job', name:'Job Interview', starter:'Tell me about yourself and why we should hire you.', vocab:['achievement','deadline','responsibility','adaptable','strength'], follow:[
+    'Tell me about yourself.',
+    'Why should we hire you?',
+    'What is your biggest strength?',
+    'What is your weakness and how do you improve it?',
+    'Can you tell me about your biggest achievement?',
+    'How do you handle pressure at work?',
+    'Why are you interested in this position?',
+    'Can you describe your previous experience?',
+    'How do you work with a team?',
+    'Where do you see yourself in five years?'
+  ]},
+  {id:'business', name:'Business Meeting', starter:'What business or service would you like to discuss today?', vocab:['proposal','market','strategy','customer','revenue'], follow:[
+    'What business or service would you like to discuss today?',
+    'Who is your target customer?',
+    'What problem does your business solve?',
+    'What makes your business different from competitors?',
+    'How do you get new customers?',
+    'What is your main product or service?',
+    'What is your pricing strategy?',
+    'How do you maintain customer trust?',
+    'What is your biggest business challenge?',
+    'What is your next business target?'
+  ]},
+  {id:'sales', name:'Sales Pitch', starter:'Please pitch your product or service to me in English.', vocab:['benefit','saving','solution','guarantee','investment'], follow:[
+    'Please pitch your product or service to me.',
+    'What is the main benefit for the customer?',
+    'What problem does your product solve?',
+    'Why should I choose your product?',
+    'Can you explain the price simply?',
+    'Do you offer a guarantee?',
+    'How can your product save money or time?',
+    'Can you give me one customer example?',
+    'What makes your offer different?',
+    'How would you close the sale politely?'
+  ]},
+  {id:'presentation', name:'Presentation', starter:'Please begin your presentation in English.', vocab:['main point','as you can see','conclusion','question','benefit'], follow:[
+    'Please open your presentation in English.',
+    'What is your first main point?',
+    'Can you summarize your product in one sentence?',
+    'What problem are you trying to solve?',
+    'What evidence supports your idea?',
+    'Can you explain this slide briefly?',
+    'What is the main benefit for the audience?',
+    'How would you handle a difficult question?',
+    'What is your conclusion?',
+    'How would you invite the audience to ask questions?'
+  ]},
+  {id:'travel', name:'Travel & Hotel', starter:'Imagine you are checking in at a hotel. What would you say?', vocab:['reservation','available room','check in','facilities','luggage'], follow:[
+    'Imagine you are checking in at a hotel. What would you say?',
+    'Do you have a reservation?',
+    'What facilities do you need?',
+    'Can you ask for an available room?',
+    'How would you ask about breakfast?',
+    'How would you complain politely about a room problem?',
+    'Can you ask for directions to a tourist place?',
+    'What do you usually prepare before traveling?',
+    'Have you ever had a problem while traveling?',
+    'What kind of hotel do you prefer?'
+  ]},
+  {id:'restaurant', name:'Food & Restaurant', starter:'What kind of food do you like, and why?', vocab:['menu','taste','recommendation','spicy','bill'], follow:[
+    'What kind of food do you like, and why?',
+    'Can you recommend one local food?',
+    'Do you prefer spicy or sweet food?',
+    'How would you order food in a restaurant?',
+    'How would you ask for the menu?',
+    'How would you ask about ingredients?',
+    'Can you describe the taste of your favorite food?',
+    'How would you complain politely if the food is cold?',
+    'How would you ask for the bill?',
+    'What restaurant would you recommend to a foreign visitor?'
+  ]},
+  {id:'customer', name:'Customer Service', starter:'I am an unhappy customer. How will you help me?', vocab:['apologize','issue','solution','replacement','follow up'], follow:[
+    'I am an unhappy customer. How will you help me?',
+    'How would you apologize to a customer?',
+    'How would you ask about the customer problem?',
+    'What solution can you offer today?',
+    'How would you explain a delay?',
+    'How would you handle an angry customer?',
+    'How would you offer a replacement?',
+    'How would you promise follow-up?',
+    'How will you prevent this problem from happening again?',
+    'How would you close the conversation politely?'
+  ]},
+  {id:'technology', name:'Technology & Apps', starter:'Tell me about an app or website you want to build.', vocab:['feature','dashboard','user','database','subscription'], follow:[
+    'Tell me about an app or website you want to build.',
+    'What is the most important feature?',
+    'Who will use this application?',
+    'How will users benefit from your app?',
+    'What problem does the app solve?',
+    'What data does the app need?',
+    'How would you explain the dashboard?',
+    'What user roles are needed?',
+    'How will the app make money?',
+    'What is your next development step?'
+  ]},
+  {id:'agriculture', name:'Agriculture & Machinery', starter:'How can agricultural machinery help farmers?', vocab:['tractor','harvester','irrigation','productivity','maintenance'], follow:[
+    'How can agricultural machinery help farmers?',
+    'How does a tractor improve productivity?',
+    'What is the benefit of irrigation pumps?',
+    'How does a combine harvester save time?',
+    'What maintenance is required?',
+    'How would you explain machine safety?',
+    'What problem do farmers face during harvest?',
+    'How can machinery reduce labor costs?',
+    'What after-sales service is important?',
+    'How would you convince farmers to use modern equipment?'
+  ]},
+  {id:'procurement', name:'Government Procurement', starter:'Explain your company capability for a government tender.', vocab:['compliance','certificate','specification','local content','delivery'], follow:[
+    'Explain your company capability for a government tender.',
+    'What documents and certificates can you provide?',
+    'How do you comply with technical specifications?',
+    'How do you ensure delivery on time?',
+    'What is your after-sales service plan?',
+    'How would you explain local content or TKDN?',
+    'How do you handle warranty claims?',
+    'What makes your company reliable?',
+    'How would you answer a procurement officer question?',
+    'What is your strongest point for winning the tender?'
+  ]},
+  {id:'investor', name:'Investor Pitch', starter:'Convince me to invest in your business.', vocab:['opportunity','risk','return','market size','scalable'], follow:[
+    'Convince me to invest in your business.',
+    'What is the market opportunity?',
+    'What is your revenue model?',
+    'How will investors get their return?',
+    'What is the biggest risk?',
+    'How do you reduce that risk?',
+    'How scalable is this business?',
+    'Who are your competitors?',
+    'What milestone will you achieve next?',
+    'Why is now the right time to invest?'
+  ]},
+  {id:'doctor', name:'Doctor Visit', starter:'Tell me your symptoms as if I am a doctor.', vocab:['symptoms','headache','fever','medicine','appointment'], follow:[
+    'Tell me your symptoms as if I am a doctor.',
+    'How long have you had this symptom?',
+    'Do you have a fever?',
+    'Do you feel any pain?',
+    'Do you have any allergies?',
+    'Have you taken any medicine?',
+    'How would you make an appointment?',
+    'How would you describe your pain level?',
+    'What questions would you ask the doctor?',
+    'How would you explain your medical history briefly?'
+  ]},
+  {id:'smalltalk', name:'Small Talk', starter:'Let’s make small talk. What do you usually talk about first?', vocab:['weather','weekend','hobby','where are you from','nice to meet you'], follow:[
+    'Let’s make small talk. What do you usually talk about first?',
+    'How would you start a conversation with a stranger?',
+    'What do you usually do on weekends?',
+    'What are your hobbies?',
+    'How would you talk about the weather?',
+    'How would you ask where someone is from?',
+    'What topics are safe for small talk?',
+    'How would you keep the conversation going?',
+    'How would you end small talk politely?',
+    'Can you ask me three friendly small-talk questions?'
+  ]}
 ];
 
 const mistakes = [
@@ -193,7 +358,7 @@ let currentTopic = topics[0];
 let currentPersonaKey = 'businessman';
 let currentPersona = personas[currentPersonaKey];
 let turnCount = 0, lastRemoteText = '', inCall = false, listening = false, recognition = null, cameraStream = null;
-let conversation = []; let logData = [];
+let conversation = []; let logData = []; let askedQuestionIndex = {}; let lastQuestion = '';
 
 function init(){
   populateTopics(); populatePersonas(); renderTopicGrid(); setupRecognition(); updatePersona(); updateBars(0,0,0); loadState();
@@ -247,12 +412,13 @@ async function toggleMic(){ if(!recognition) return; if(listening){ recognition.
 function startSession(){
   currentTopic = topics.find(t=>t.id===document.getElementById('topicSelect').value) || topics[0];
   currentPersonaKey = document.getElementById('personaSelect').value || 'businessman'; currentPersona = personas[currentPersonaKey]; updatePersona();
-  inCall = true; turnCount = 0; conversation = []; logData = []; updateScores(0,0,0); document.getElementById('turnScore').textContent='0'; document.getElementById('callStatus').textContent='Status: in call';
+  inCall = true; turnCount = 0; conversation = []; logData = []; askedQuestionIndex = {}; lastQuestion = ''; updateScores(0,0,0); document.getElementById('turnScore').textContent='0'; document.getElementById('callStatus').textContent='Status: in call';
   const mode = document.getElementById('sessionMode').value; const level = document.getElementById('levelSelect').value;
   document.getElementById('sessionInfo').textContent = `${currentTopic.name} • ${mode} • ${level}`;
   document.getElementById('transcriptBox').innerHTML='';
   const goal = document.getElementById('goalInput').value.trim();
-  const intro = `Hello, I am ${currentPersona.name}, your ${currentPersona.role.toLowerCase()}. Today we will practice ${currentTopic.name}. ${currentTopic.starter}${goal ? ' I will also help you with this goal: '+goal+'.' : ''}`;
+  lastQuestion = getNextThemeQuestion();
+  const intro = `Hello, I am ${currentPersona.name}, your ${currentPersona.role.toLowerCase()}. Today we will practice ${currentTopic.name}.${goal ? ' I will also help you with this goal: '+goal+'.' : ''} First question: ${lastQuestion}`;
   addTranscript('bot', intro); speakRemote(intro); conversation.push({role:'bot', content:intro}); renderCoachWelcome(); saveState();
 }
 
@@ -361,13 +527,26 @@ function answerQuestion(text, topicId){
 }
 
 function chooseFollowUp(userText, analysis){
-  const f = currentTopic.follow || ['Can you give me one example?'];
-  if(analysis.key.includes('customer')) return 'Now tell me: what kind of customer do you want to serve most?';
-  if(analysis.key.includes('price')) return 'Can you explain your pricing in a simple way?';
-  if(analysis.key.includes('experience')) return 'Can you give one example from your experience?';
-  if(analysis.key.includes('tractor') || analysis.key.includes('machine')) return 'Can you explain one practical benefit for farmers?';
-  if(analysis.key.includes('app') || analysis.key.includes('dashboard')) return 'What is the main feature of the app?';
-  return f[Math.floor(Math.random()*f.length)];
+  let contextual = '';
+  if(analysis.key.includes('customer')) contextual = 'Before we move on, what kind of customer do you want to serve most?';
+  else if(analysis.key.includes('price')) contextual = 'Before the next question, can you explain your pricing in a simple way?';
+  else if(analysis.key.includes('experience')) contextual = 'Before the next question, can you give one example from your experience?';
+  else if(analysis.key.includes('tractor') || analysis.key.includes('machine')) contextual = 'Before the next question, can you explain one practical benefit for farmers?';
+  else if(analysis.key.includes('app') || analysis.key.includes('dashboard')) contextual = 'Before the next question, what is the main feature of the app?';
+
+  const nextThemeQuestion = getNextThemeQuestion();
+  if(contextual) return contextual + ' After that, answer this next theme question: ' + nextThemeQuestion;
+  return 'Next question: ' + nextThemeQuestion;
+}
+
+function getNextThemeQuestion(){
+  const list = currentTopic.follow && currentTopic.follow.length ? currentTopic.follow : ['Can you explain more?'];
+  const topicId = currentTopic.id;
+  const idx = askedQuestionIndex[topicId] || 0;
+  const q = list[idx % list.length];
+  askedQuestionIndex[topicId] = idx + 1;
+  lastQuestion = q;
+  return q;
 }
 
 function buildNaturalVersion(corrected, original){
@@ -415,7 +594,7 @@ function saveLog(user, analysis, reply){ logData.push({time:new Date().toLocaleS
 function downloadLog(){ const data = logData.length?logData:JSON.parse(localStorage.getItem('english-ai-live-log')||'[]'); const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='english-ai-live-log.json'; a.click(); }
 function saveState(){ const state={topic:currentTopic.id, persona:currentPersonaKey, level:document.getElementById('levelSelect').value, correctionMode:document.getElementById('correctionMode').value, voiceRate:document.getElementById('voiceRate').value, sessionMode:document.getElementById('sessionMode').value, goalInput:document.getElementById('goalInput').value}; localStorage.setItem('english-ai-live-state', JSON.stringify(state)); }
 function loadState(){ const raw=localStorage.getItem('english-ai-live-state'); if(!raw) return; try{ const s=JSON.parse(raw); if(s.topic){ currentTopic=topics.find(t=>t.id===s.topic)||topics[0]; document.getElementById('topicSelect').value=currentTopic.id; } if(s.persona&&personas[s.persona]){ currentPersonaKey=s.persona; document.getElementById('personaSelect').value=s.persona; } if(s.level) document.getElementById('levelSelect').value=s.level; if(s.correctionMode) document.getElementById('correctionMode').value=s.correctionMode; if(s.voiceRate) document.getElementById('voiceRate').value=s.voiceRate; if(s.sessionMode) document.getElementById('sessionMode').value=s.sessionMode; if(s.goalInput) document.getElementById('goalInput').value=s.goalInput; updatePersona(); renderTopicGrid(); }catch(e){} }
-function resetSession(){ inCall=false; turnCount=0; lastRemoteText=''; conversation=[]; document.getElementById('callStatus').textContent='Status: ready'; document.getElementById('sessionInfo').textContent='Choose topic and start'; document.getElementById('turnScore').textContent='0'; updateScores(0,0,0); document.getElementById('transcriptBox').innerHTML='<div class="msg bot"><span class="who">System</span>Welcome! Pilih tema dan lawan bicara, lalu klik <b>Mulai Sesi</b>.</div>'; document.getElementById('coachOutput').innerHTML='<div class="coach-note">Di sini akan muncul koreksi grammar umum, versi kalimat yang lebih natural, dan saran perbaikan.</div>'; document.getElementById('userInput').value=''; window.speechSynthesis?.cancel(); document.getElementById('remoteFrame').classList.remove('speaking'); saveState(); }
+function resetSession(){ inCall=false; turnCount=0; lastRemoteText=''; conversation=[]; askedQuestionIndex={}; lastQuestion=''; document.getElementById('callStatus').textContent='Status: ready'; document.getElementById('sessionInfo').textContent='Choose topic and start'; document.getElementById('turnScore').textContent='0'; updateScores(0,0,0); document.getElementById('transcriptBox').innerHTML='<div class="msg bot"><span class="who">System</span>Welcome! Pilih tema dan lawan bicara, lalu klik <b>Mulai Sesi</b>.</div>'; document.getElementById('coachOutput').innerHTML='<div class="coach-note">Di sini akan muncul koreksi grammar umum, versi kalimat yang lebih natural, dan saran perbaikan.</div>'; document.getElementById('userInput').value=''; window.speechSynthesis?.cancel(); document.getElementById('remoteFrame').classList.remove('speaking'); saveState(); }
 function escapeHtml(str){ return String(str).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
 document.getElementById('userInput').addEventListener('keydown', (e)=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendUser(); } });
 ['levelSelect','correctionMode','voiceRate','sessionMode','goalInput'].forEach(id=> document.addEventListener('change', e=>{ if(e.target && e.target.id===id) saveState(); }));
