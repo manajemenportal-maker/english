@@ -87,6 +87,13 @@
     .msg{font-size:13.5px;line-height:1.55;padding:10px 11px}
     .coach-note{font-size:13.5px;line-height:1.55;padding:10px 12px}
     .coach-scroll{height:100%;overflow:auto;padding-right:3px}
+
+    .practice-answer{border-left:4px solid var(--blue);background:rgba(56,189,248,.09);padding:11px 12px;border-radius:12px;font-size:13.5px;line-height:1.55;margin-top:8px}
+    .practice-answer b{color:#dff5ff}
+    .practice-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+    .practice-actions button{padding:7px 9px;border-radius:999px;font-size:11px;background:#173258;color:#eef6ff;border:1px solid rgba(255,255,255,.14);box-shadow:none}
+    .drill-line{margin-top:7px;padding:8px 9px;border-radius:10px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08)}
+
     .focus-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:999;display:none;align-items:center;justify-content:center;padding:16px}
     .focus-card{width:min(1050px,96vw);height:min(820px,92vh);background:#08172a;border:1px solid rgba(255,255,255,.16);border-radius:24px;box-shadow:0 24px 90px rgba(0,0,0,.55);display:flex;flex-direction:column;overflow:hidden}
     .focus-head{padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.13);display:flex;align-items:center;justify-content:space-between}
@@ -497,7 +504,27 @@ function startSession(){
 }
 
 function renderCoachWelcome(){
-  document.getElementById('coachOutput').innerHTML = `<div class="coach-note"><b>Vocabulary tema:</b><br>${currentTopic.vocab.map(v=>'• '+v).join('<br>')}</div><div class="coach-note warn"><b>Tips:</b><br>Answer → Reason → Example → Ask back.</div>`;
+  const practice = makePracticeAnswers({summary:'', corrected:'', natural:'', found:[]});
+  sessionStorage.setItem('lastPracticeAnswers', JSON.stringify(practice));
+  document.getElementById('coachOutput').innerHTML =
+    `<div class="coach-note"><b>Vocabulary tema:</b><br>${currentTopic.vocab.map(v=>'• '+v).join('<br>')}</div>
+    <div class="coach-note warn"><b>Tips:</b><br>Answer → Reason → Example → Ask back.</div>
+    <div class="practice-answer">
+      <b>Contoh Jawaban Awal - Simple</b>
+      <div class="drill-line">${escapeHtml(practice.simple)}</div>
+      <div class="practice-actions">
+        <button onclick="setPracticeAnswer('simple')">Masukkan ke Jawaban</button>
+        <button onclick="speakPracticeAnswer('simple')">Dengarkan</button>
+      </div>
+    </div>
+    <div class="practice-answer">
+      <b>Contoh Jawaban Awal - Natural</b>
+      <div class="drill-line">${escapeHtml(practice.natural)}</div>
+      <div class="practice-actions">
+        <button onclick="setPracticeAnswer('natural')">Masukkan ke Jawaban</button>
+        <button onclick="speakPracticeAnswer('natural')">Dengarkan</button>
+      </div>
+    </div>`;
 }
 
 function sendUser(){
@@ -638,6 +665,99 @@ function cleanupSentence(text){ let s = text.replace(/i/g,'I').replace(/\s+/g,
 function updateScores(grammar,vocab,confidence){ document.getElementById('grammarScore').textContent=String(grammar); document.getElementById('vocabScore').textContent=String(vocab); document.getElementById('confidenceScore').textContent=String(confidence); updateBars(grammar,vocab,confidence); }
 function updateBars(g,v,c){ document.getElementById('grammarBar').style.width=g+'%'; document.getElementById('vocabBar').style.width=v+'%'; document.getElementById('confidenceBar').style.width=c+'%'; }
 
+
+function makePracticeAnswers(a){
+  const topic = currentTopic.id;
+  const userPoint = a.summary || 'this topic';
+  const base = {
+    simple: '',
+    natural: '',
+    advanced: ''
+  };
+
+  if(topic === 'job'){
+    base.simple = 'I believe I am a good candidate because I am responsible and willing to learn.';
+    base.natural = 'I believe I am a strong candidate because I am responsible, adaptable, and able to work under pressure. For example, I always try to finish my tasks on time and improve the quality of my work.';
+    base.advanced = 'I believe I can contribute to this company because I combine responsibility, adaptability, and practical problem-solving. In my previous experience, I learned how to work with deadlines, communicate with a team, and stay focused on results.';
+  } else if(topic === 'business'){
+    base.simple = 'Our business helps customers solve their problem in a practical way.';
+    base.natural = 'Our business provides a practical solution for customers by helping them save time, reduce costs, and improve their work process. For example, we focus on useful products, reliable service, and clear communication.';
+    base.advanced = 'Our business is built around a clear customer problem. We provide a practical solution that improves efficiency, reduces operational costs, and creates long-term value. The main advantage is that we combine product quality with after-sales support.';
+  } else if(topic === 'sales'){
+    base.simple = 'This product is useful because it helps customers save money and work better.';
+    base.natural = 'Our product helps customers solve a real problem, save money, and work more efficiently. For example, it can reduce operating costs while keeping the system simple and easy to use.';
+    base.advanced = 'The main value of this product is not only the price, but the measurable benefit for the customer. It helps reduce operating costs, improves efficiency, and gives customers a practical return on their investment.';
+  } else if(topic === 'presentation'){
+    base.simple = 'Today I would like to explain our product and its main benefits.';
+    base.natural = 'Today I would like to explain our product, the problem it solves, and the benefits for customers. The main point is that this solution helps users work more efficiently and make better decisions.';
+    base.advanced = 'Good morning everyone. Today I will present a practical solution designed to solve a real customer problem. I will explain the background, the main features, the benefits, and why this solution is valuable for the target market.';
+  } else if(topic === 'technology'){
+    base.simple = 'This application helps users work faster and manage their data easily.';
+    base.natural = 'This application helps users work more efficiently by providing useful features such as a dashboard, user roles, database management, and simple reporting. The goal is to make daily work easier and more organized.';
+    base.advanced = 'The application is designed to solve an operational problem by combining user-friendly features, structured data, role-based access, and a clear dashboard. This makes the system useful not only for selling, but also for daily business operations.';
+  } else if(topic === 'agriculture'){
+    base.simple = 'Agricultural machinery helps farmers work faster and produce more.';
+    base.natural = 'Agricultural machinery helps farmers improve productivity, save time, and reduce labor costs. For example, tractors, irrigation pumps, and harvesters can make land preparation, watering, and harvesting more efficient.';
+    base.advanced = 'Modern agricultural machinery can improve farm productivity by reducing manual labor, speeding up field operations, and improving consistency. With proper maintenance and after-sales service, farmers can get long-term benefits from the equipment.';
+  } else if(topic === 'procurement'){
+    base.simple = 'Our company can support this tender with good products and complete documents.';
+    base.natural = 'Our company can support this tender by providing compliant products, complete documentation, reliable delivery, and strong after-sales service. We understand that technical specifications, certificates, and service support are very important.';
+    base.advanced = 'For this procurement, our company is ready to provide products that meet the required specifications, supported by complete documentation, delivery planning, warranty handling, and after-sales service. Our goal is to deliver not only the product, but also reliability and accountability.';
+  } else if(topic === 'investor'){
+    base.simple = 'This business has a good opportunity because the market needs this solution.';
+    base.natural = 'This business has a strong opportunity because it solves a real market problem and can generate recurring revenue. Investors can benefit from business growth, customer demand, and a clear revenue model.';
+    base.advanced = 'The investment opportunity is attractive because the business addresses a measurable market need, has potential recurring revenue, and can scale through partnerships and customer acquisition. The key focus is balancing return, risk, and execution capability.';
+  } else if(topic === 'doctor'){
+    base.simple = 'I have a fever and a headache. I have felt this since yesterday.';
+    base.natural = 'I have had a fever and a headache since yesterday. The pain is moderate, and I feel tired. I have not taken any medicine yet, and I would like to know what I should do.';
+    base.advanced = 'I have been experiencing a fever and headache since yesterday. The symptoms are moderate, but they make me feel weak and uncomfortable. I have not taken any medication yet, and I would like your advice on the next step.';
+  } else if(topic === 'travel'){
+    base.simple = 'Hello, I have a reservation under my name. I would like to check in, please.';
+    base.natural = 'Hello, I have a reservation under my name, and I would like to check in. Could you please confirm my booking and let me know what facilities are included?';
+    base.advanced = 'Good evening. I have a reservation under my name and would like to check in. Could you please confirm the room type, breakfast schedule, Wi-Fi information, and checkout time?';
+  } else if(topic === 'restaurant'){
+    base.simple = 'I like spicy food because it has a strong taste.';
+    base.natural = 'I like spicy food because it has a strong and exciting taste. For example, I enjoy Indonesian dishes with chili because they are rich in flavor.';
+    base.advanced = 'I personally enjoy spicy food because it gives a strong flavor and makes the meal more interesting. For example, Indonesian food often combines spice, aroma, and texture in a very unique way.';
+  } else if(topic === 'customer'){
+    base.simple = 'I am sorry for the problem. I will check it and help you find a solution.';
+    base.natural = 'I am sorry for the inconvenience. Let me check the issue first, and then I will offer the best solution for you. We will also follow up to make sure the problem is solved.';
+    base.advanced = 'I sincerely apologize for the inconvenience. I will review the issue immediately, explain the available solution clearly, and make sure our team follows up so the same problem does not happen again.';
+  } else if(topic === 'smalltalk'){
+    base.simple = 'Hi, nice to meet you. How is your day going?';
+    base.natural = 'Hi, nice to meet you. How is your day going? I usually start small talk by asking about someone’s day, weekend plans, or hobbies.';
+    base.advanced = 'Hi, it is nice to meet you. I usually start small talk with a friendly and simple question, such as asking about someone’s day, weekend plans, or general interests. It helps make the conversation comfortable.';
+  } else if(topic === 'selfintro'){
+    base.simple = 'My name is Surya. I work in business and I want to improve my English.';
+    base.natural = 'My name is Surya, and I work in business development. I am interested in practical solutions, technology, and improving my communication skills in English.';
+    base.advanced = 'My name is Surya. I have a background in business development and practical solution building. I am currently improving my English so I can communicate more confidently in meetings, presentations, and professional conversations.';
+  } else {
+    base.simple = 'I think this topic is important because it helps me communicate better.';
+    base.natural = 'I think this topic is important because it helps me communicate more clearly in real situations. For example, I can practice giving reasons, examples, and asking follow-up questions.';
+    base.advanced = 'This topic is useful for improving real communication because it trains me to answer clearly, support my ideas with examples, and keep the conversation going naturally.';
+  }
+
+  return base;
+}
+
+function setPracticeAnswer(level){
+  const dataRaw = sessionStorage.getItem('lastPracticeAnswers');
+  if(!dataRaw) return;
+  const data = JSON.parse(dataRaw);
+  const text = data[level] || data.natural || '';
+  const input = document.getElementById('userInput');
+  input.value = text;
+  input.focus();
+}
+
+function speakPracticeAnswer(level){
+  const dataRaw = sessionStorage.getItem('lastPracticeAnswers');
+  if(!dataRaw) return;
+  const data = JSON.parse(dataRaw);
+  const text = data[level] || data.natural || '';
+  if(text) speakRemote(text);
+}
+
 function renderCoach(a){
   const klass = a.found.length ? 'bad':'';
   const suggestions = [];
@@ -645,6 +765,9 @@ function renderCoach(a){
   if(!/\bfor example\b/i.test(a.natural)) suggestions.push('Tambahkan contoh dengan “for example”.');
   if(!/\?/.test(a.natural)) suggestions.push('Akhiri jawaban dengan pertanyaan balik agar percakapan lebih hidup.');
   if(a.found.length===0) suggestions.push('Grammar umum sudah cukup baik. Fokus berikutnya: detail, pronunciation, dan naturalness.');
+
+  const practice = makePracticeAnswers(a);
+  sessionStorage.setItem('lastPracticeAnswers', JSON.stringify(practice));
 
   document.getElementById('coachOutput').innerHTML =
     `<div class="coach-note ${klass}">
@@ -659,12 +782,36 @@ function renderCoach(a){
       <b>3. More Natural Version</b><br>
       ${escapeHtml(a.natural)}
     </div>
+    <div class="practice-answer">
+      <b>4. Contoh Jawaban Siap Diulang - Simple</b>
+      <div class="drill-line">${escapeHtml(practice.simple)}</div>
+      <div class="practice-actions">
+        <button onclick="setPracticeAnswer('simple')">Masukkan ke Jawaban</button>
+        <button onclick="speakPracticeAnswer('simple')">Dengarkan</button>
+      </div>
+    </div>
+    <div class="practice-answer">
+      <b>5. Contoh Jawaban Siap Diulang - Natural</b>
+      <div class="drill-line">${escapeHtml(practice.natural)}</div>
+      <div class="practice-actions">
+        <button onclick="setPracticeAnswer('natural')">Masukkan ke Jawaban</button>
+        <button onclick="speakPracticeAnswer('natural')">Dengarkan</button>
+      </div>
+    </div>
+    <div class="practice-answer">
+      <b>6. Contoh Jawaban Siap Diulang - Advanced</b>
+      <div class="drill-line">${escapeHtml(practice.advanced)}</div>
+      <div class="practice-actions">
+        <button onclick="setPracticeAnswer('advanced')">Masukkan ke Jawaban</button>
+        <button onclick="speakPracticeAnswer('advanced')">Dengarkan</button>
+      </div>
+    </div>
     <div class="coach-note">
-      <b>4. Next Improvement</b><br>
+      <b>7. Next Improvement</b><br>
       ${suggestions.map(s=>'• '+escapeHtml(s)).join('<br>')}
     </div>
     <div class="coach-note">
-      <b>5. Last Question Asked</b><br>
+      <b>8. Last Question Asked</b><br>
       ${escapeHtml(lastQuestion || 'Belum ada pertanyaan.')}
     </div>`;
 }
